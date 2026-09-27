@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AITT Plus Ludo | لودو المستقبل</title>
+  
+  <!-- خطوط Google Fonts: Orbitron للعناوين السايبربانك + Cairo للنصوص العربية -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet" />
+  
+  <!-- ملف التنسيقات الرئيسي -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- خلفية الجزيئات والشبكة السايبربانك المتحركة -->
+  <canvas id="bg-particles"></canvas>
+  <div class="cyber-grid-overlay"></div>
+
+  <!-- ==========================================
+       1. شاشة البداية (Splash Screen)
+       ========================================== -->
+  <section id="screen-splash" class="screen active">
+    <div class="splash-container">
+      <!-- شعار AITT Plus بتأثير النبض النيوني -->
+      <div class="neon-logo-wrapper">
+        <div class="neon-logo-ring"></div>
+        <div class="neon-logo-core">
+          <span class="logo-aitt">AITT</span>
+          <span class="logo-plus">+</span>
+        </div>
+      </div>
+
+      <!-- اسم اللعبة -->
+      <h1 class="game-title neon-text-gradient">LUDO AITTP</h1>
+      <p class="game-subtitle">CYBERPUNK NEON EDITION</p>
+
+      <!-- زر الدخول واللعب -->
+      <button id="btn-splash-play" class="cyber-btn primary-btn pulse-glow">
+        <span class="btn-glitch-text" data-text="ابدأ اللعب | PLAY">ابدأ اللعب | PLAY</span>
+        <div class="btn-corner-tl"></div>
+        <div class="btn-corner-br"></div>
+      </button>
+      
+      <div class="version-tag">v2.0 • Future Arena</div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       2. القائمة الرئيسية (Main Menu)
+       ========================================== -->
+  <section id="screen-menu" class="screen">
+    <!-- الشريط العلوي (Header) -->
+    <header class="cyber-header">
+      <div class="user-profile-badge" id="btn-open-char-select">
+        <div class="avatar-ring">
+          <span id="header-avatar" class="avatar-emoji">🦊</span>
+        </div>
+        <div class="user-meta">
+          <span id="header-username" class="user-name">Player 1</span>
+          <span class="user-level">المستوى <span id="header-level">1</span></span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- رصيد نقاط AITTP -->
+        <div class="currency-badge">
+          <span class="currency-icon">⚡</span>
+          <span id="header-coins" class="currency-amount">1,000</span>
+          <span class="currency-tag">AITTP</span>
+        </div>
+
+        <!-- زر الإعدادات -->
+        <button id="btn-open-settings" class="icon-btn" aria-label="الإعدادات">
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <!-- محتوى القائمة: البطاقات الأربع -->
+    <main class="menu-content">
+      <h2 class="section-title neon-subtext">اختر نمط المعركة</h2>
+
+      <div class="menu-cards-grid">
+        <!-- بطاقة اللعب ضد الذكاء الاصطناعي (النمط الفوري) -->
+        <div class="cyber-card" id="card-vs-ai" data-mode="ai">
+          <div class="card-glow-layer"></div>
+          <div class="card-icon">🤖</div>
+          <div class="card-info">
+            <h3 class="card-title">ضد الذكاء الاصطناعي</h3>
+            <p class="card-desc">تحدَّ 3 روبوتات بمستويات مختلفة</p>
+          </div>
+          <span class="card-badge live">فوري</span>
+        </div>
+
+        <!-- بطاقة لعب سريع -->
+        <div class="cyber-card" id="card-quick-match" data-mode="quick">
+          <div class="card-glow-layer"></div>
+          <div class="card-icon">⚡</div>
+          <div class="card-info">
+            <h3 class="card-title">لعب سريع</h3>
+            <p class="card-desc">مباراة خاطفة بنقاط مضاعفة</p>
+          </div>
+          <span class="card-badge">سريع</span>
+        </div>
+
+        <!-- بطاقة لعب مع الأصدقاء -->
+        <div class="cyber-card" id="card-pass-play" data-mode="local">
+          <div class="card-glow-layer"></div>
+          <div class="card-icon">👥</div>
+          <div class="card-info">
+            <h3 class="card-title">لعب محلي مع أصدقاء</h3>
+            <p class="card-desc">شارك الهاتف والعب حتى 4 لاعبين</p>
+          </div>
+          <span class="card-badge">2-4 لاعبين</span>
+        </div>
+
+        <!-- بطاقة لوحة الصدارة -->
+        <div class="cyber-card" id="card-leaderboard" data-mode="leaderboard">
+          <div class="card-glow-layer"></div>
+          <div class="card-icon">🏆</div>
+          <div class="card-info">
+            <h3 class="card-title">لوحة المتصدرين</h3>
+            <p class="card-desc">سجل الأبطال وترتيب النقاط</p>
+          </div>
+          <span class="card-badge gold">TOP RANK</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- ذيل القائمة -->
+    <footer class="cyber-footer">
+      <button id="btn-menu-characters" class="cyber-btn secondary-btn">
+        <span>🎭 متجر الأفاتار</span>
+      </button>
+      <button id="btn-menu-settings" class="cyber-btn ghost-btn">
+        <span>⚙️ الإعدادات والصوت</span>
+      </button>
+    </footer>
+  </section>
+
+  <!-- ==========================================
+       3. شاشة اختيار الشخصيات والأفاتار (Character Selection)
+       ========================================== -->
+  <section id="screen-characters" class="screen">
+    <div class="screen-modal-wrapper">
+      <div class="modal-header">
+        <h2 class="neon-title">اختيار الهوية والأفاتار</h2>
+        <button id="btn-close-chars" class="close-x-btn">✕</button>
+      </div>
+
+      <!-- تبويبات الفئات -->
+      <div class="char-tabs">
+        <button class="char-tab-btn active" data-tab="all">الكل</button>
+        <button class="char-tab-btn" data-tab="girls">بنات</button>
+        <button class="char-tab-btn" data-tab="boys">أولاد</button>
+        <button class="char-tab-btn" data-tab="vip">VIP 👑</button>
+        <button class="char-tab-btn" data-tab="cyber">Cyber</button>
+      </div>
+
+      <!-- شبكة الأفاتارات -->
+      <div class="avatars-grid" id="avatars-container">
+        <!-- يتم توليد عناصر الأفاتار ديناميكياً بواسطة JavaScript -->
+      </div>
+
+      <!-- زر التأكيد والاعتماد -->
+      <div class="modal-footer">
+        <button id="btn-confirm-avatar" class="cyber-btn primary-btn full-width">
+          تأكيد الاختيار
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       4. شاشة رقعة اللعبة الرئيسية (Game Board Screen)
+       ========================================== -->
+  <section id="screen-game" class="screen">
+    <!-- الشريط العلوي للمباراة: بطاقات اللاعبين الأربعة -->
+    <div class="game-hud-top">
+      <div class="hud-player-card player-red" id="hud-p0">
+        <div class="player-avatar-box">
+          <span class="p-avatar">🦊</span>
+          <span class="active-pulse"></span>
+        </div>
+        <div class="player-details">
+          <span class="p-name">أنت</span>
+          <div class="p-score-tokens">
+            <span class="p-tokens-left">4 قطع</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-player-card player-green" id="hud-p1">
+        <div class="player-avatar-box">
+          <span class="p-avatar">🤖</span>
+          <span class="active-pulse"></span>
+        </div>
+        <div class="player-details">
+          <span class="p-name">Cyborg-1</span>
+          <div class="p-score-tokens">
+            <span class="p-tokens-left">4 قطع</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-player-card player-yellow" id="hud-p2">
+        <div class="player-avatar-box">
+          <span class="p-avatar">🦁</span>
+          <span class="active-pulse"></span>
+        </div>
+        <div class="player-details">
+          <span class="p-name">Nova-AI</span>
+          <div class="p-score-tokens">
+            <span class="p-tokens-left">4 قطع</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-player-card player-blue" id="hud-p3">
+        <div class="player-avatar-box">
+          <span class="p-avatar">🐺</span>
+          <span class="active-pulse"></span>
+        </div>
+        <div class="player-details">
+          <span class="p-name">Viper</span>
+          <div class="p-score-tokens">
+            <span class="p-tokens-left">4 قطع</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- حاوية رقعة اللعبة (Canvas 15x15) -->
+    <div class="board-arena-container">
+      <div class="board-neon-frame">
+        <canvas id="ludo-board" width="600" height="600"></canvas>
+      </div>
+    </div>
+
+    <!-- الشريط السفلي: النرد، مؤشر الدور، وأزرار التحكم -->
+    <div class="game-hud-bottom">
+      <!-- أزرار الإجراءات السريعة (يسار) -->
+      <div class="hud-action-btns">
+        <button id="btn-game-home" class="hud-circle-btn" title="الرئيسية">🏠</button>
+        <button id="btn-game-sound" class="hud-circle-btn" title="كتم/تشغيل الصوت">🔊</button>
+      </div>
+
+      <!-- منصة النرد النيوني المركزية -->
+      <div class="dice-platform-wrapper">
+        <div class="turn-status-badge" id="turn-indicator">
+          دور: <span id="current-player-name" class="turn-highlight">أنت</span>
+        </div>
+
+        <div class="dice-stage" id="dice-container">
+          <div class="dice-neon-pedestal"></div>
+          <div class="dice-wave" id="dice-wave"></div>
+          
+          <!-- عنصر النرد ثلاثي الأبعاد بالـ CSS -->
+          <div class="cyber-dice" id="main-dice" role="button" tabindex="0" aria-label="ارمي النرد">
+            <span id="dice-face-value" class="dice-val">🎲</span>
+          </div>
+        </div>
+        <div class="dice-hint" id="dice-hint">اضغط لرمي النرد</div>
+      </div>
+
+      <!-- أزرار الإجراءات السريعة (يمين) -->
+      <div class="hud-action-btns">
+        <button id="btn-game-chat" class="hud-circle-btn" title="عبارات سريعة">💬</button>
+        <button id="btn-game-settings" class="hud-circle-btn" title="الإعدادات">⚙️</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       5. شاشة النصر والنتيجة (Victory Modal)
+       ========================================== -->
+  <div id="modal-victory" class="cyber-modal">
+    <div class="modal-backdrop"></div>
+    <div class="victory-card">
+      <div class="cup-bounce-wrapper">
+        <span class="golden-trophy">🏆</span>
+      </div>
+      <h2 class="victory-heading neon-gold-text">VICTORY!</h2>
+      <p id="winner-celebration-text" class="victory-sub">تهانينا! الفائز بالساحة هو أنت</p>
+      
+      <div class="reward-pill">
+        <span>المكافأة:</span>
+        <b id="victory-reward-amount">+50 AITTP</b>
+      </div>
+
+      <!-- ترتيب اللاعبين النهائي -->
+      <div class="final-ranks-list" id="final-ranks-container">
+        <!-- يتم تعبئة الرتب ديناميكياً -->
+      </div>
+
+      <!-- أزرار ما بعد المباراة -->
+      <div class="victory-actions">
+        <button id="btn-victory-again" class="cyber-btn primary-btn">
+          لعب مرة أخرى
+        </button>
+        <button id="btn-victory-menu" class="cyber-btn secondary-btn">
+          القائمة الرئيسية
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       6. شاشة الإعدادات (Settings Modal)
+       ========================================== -->
+  <div id="modal-settings" class="cyber-modal">
+    <div class="modal-backdrop"></div>
+    <div class="settings-card">
+      <div class="modal-header">
+        <h2 class="neon-title">إعدادات النظام</h2>
+        <button id="btn-close-settings" class="close-x-btn">✕</button>
+      </div>
+
+      <div class="settings-list">
+        <!-- المؤثرات الصوتية -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-name">المؤثرات الصوتية (SFX)</span>
+            <span class="setting-sub">أصوات النرد، الحركة، والالتهام</span>
+          </div>
+          <label class="cyber-toggle">
+            <input type="checkbox" id="toggle-sfx" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- الموسيقى التفاعلية -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-name">موسيقى الخلفية النيون</span>
+            <span class="setting-sub">أنغام سايبربانك إلكترونية</span>
+          </div>
+          <label class="cyber-toggle">
+            <input type="checkbox" id="toggle-music" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- الاهتزاز (Vibration API) -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-name">الاهتزاز اللمسي (Haptic)</span>
+            <span class="setting-sub">ردود فعل بالاهتزاز على الهواتف</span>
+          </div>
+          <label class="cyber-toggle">
+            <input type="checkbox" id="toggle-vibration" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- مستوى الذكاء الاصطناعي -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-name">مستوى ذكاء الخصوم (AI)</span>
+            <span class="setting-sub">صعوبة حركة الروبوتات</span>
+          </div>
+          <select id="select-ai-difficulty" class="cyber-select">
+            <option value="easy">سهل (Easy)</option>
+            <option value="medium" selected>متوسط (Medium)</option>
+            <option value="hard">استراتيجي خبير (Hard)</option>
+          </select>
+        </div>
+
+        <!-- اللغة -->
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-name">اللغة | Language</span>
+            <span class="setting-sub">تبديل واجهة العرض</span>
+          </div>
+          <select id="select-language" class="cyber-select">
+            <option value="ar" selected>العربية (RTL)</option>
+            <option value="en">English (LTR)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- إعادة التعيين -->
+      <div class="settings-danger-zone">
+        <button id="btn-reset-data" class="danger-btn">
+          ⚠️ إعادة تعيين البيانات والنقاط
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       7. نافذة العبارات التفاعلية السريعة (Quick Chat Modal)
+       ========================================== -->
+  <div id="modal-quick-chat" class="cyber-modal">
+    <div class="modal-backdrop"></div>
+    <div class="quick-chat-card">
+      <div class="modal-header">
+        <h3 class="neon-title">عبارات المعركة السريعة</h3>
+        <button id="btn-close-chat" class="close-x-btn">✕</button>
+      </div>
+      <div class="quick-phrases-grid" id="quick-phrases-list">
+        <button class="phrase-pill">حركة ممتازة! 🔥</button>
+        <button class="phrase-pill">حظ أوفر في الدور القادم 😎</button>
+        <button class="phrase-pill">لن تفلت بقطعك! ⚡</button>
+        <button class="phrase-pill">النرد اليوم معي 🎲</button>
+        <button class="phrase-pill">أين ستهرب؟ 🎯</button>
+        <button class="phrase-pill">لعبة رائعة يا أبطال 👏</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- فقاعة الرسالة العائمة أثناء اللعب -->
+  <div id="toast-bubble" class="toast-bubble"></div>
+
+  <!-- تحميل المحرك البرمجي الرئيسي للعبة -->
+  <script src="game.js"></script>
+</body>
+</html>
