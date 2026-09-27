@@ -1,0 +1,976 @@
+/* ==========================================================================
+   AITT Plus Ludo — Cyberpunk Neon Stylesheet
+   متوافق مع الهواتف والشاشات الكبيرة | يدعم RTL والعربية بالكامل
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. المتغيرات العامة ونظام الألوان (CSS Variables)
+   -------------------------------------------------------------------------- */
+:root {
+  /* ألوان الهوية النيون الأساسية */
+  --bg-dark: #050816;
+  --bg-card: rgba(13, 22, 45, 0.82);
+  --bg-card-border: rgba(0, 212, 255, 0.25);
+  
+  --neon-cyan: #00d4ff;
+  --neon-purple: #a855f7;
+  --neon-gold: #ffcc00;
+  --text-main: #f0f6fc;
+  --text-muted: #8b9bb4;
+
+  /* ألوان مسارات وقطع اللاعبين الأربعة */
+  --p-red: #ff3355;
+  --p-green: #33cc66;
+  --p-yellow: #ffcc00;
+  --p-blue: #3399ff;
+
+  /* توهجات النيون (Glow Shadows) */
+  --glow-cyan: 0 0 15px rgba(0, 212, 255, 0.65), 0 0 30px rgba(0, 212, 255, 0.25);
+  --glow-purple: 0 0 15px rgba(168, 85, 247, 0.65), 0 0 30px rgba(168, 85, 247, 0.25);
+  --glow-gold: 0 0 18px rgba(255, 204, 0, 0.75);
+
+  /* الخطوط */
+  --font-title: 'Orbitron', sans-serif;
+  --font-body: 'Cairo', sans-serif;
+
+  /* الانتقالات */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. إعادة التعيين والأساسيات (Reset & Base)
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  user-select: none;
+}
+
+/* شبكة السايبربانك الخلفية المتحركة */
+#bg-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cyber-grid-overlay {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. إدارة الشاشات (Screen Management)
+   -------------------------------------------------------------------------- */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-smooth), visibility var(--transition-smooth);
+  z-index: 2;
+  overflow-y: auto;
+}
+
+.screen.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   4. الأزرار والعناصر المشتركة (Buttons & UI Elements)
+   -------------------------------------------------------------------------- */
+.cyber-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 12px 28px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.cyber-btn.primary-btn {
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  color: #050816;
+  box-shadow: var(--glow-cyan);
+}
+
+.cyber-btn.primary-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.9);
+}
+
+.cyber-btn.primary-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.cyber-btn.secondary-btn {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: var(--neon-purple);
+  color: var(--text-main);
+}
+
+.cyber-btn.secondary-btn:hover {
+  background: rgba(168, 85, 247, 0.3);
+  box-shadow: var(--glow-purple);
+}
+
+.cyber-btn.ghost-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+}
+
+.icon-btn, .hud-circle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-main);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.icon-btn:hover, .hud-circle-btn:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+  transform: scale(1.08);
+}
+
+.close-x-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.close-x-btn:hover { color: var(--p-red); }
+
+/* نصوص التدرج والنيون */
+.neon-text-gradient {
+  font-family: var(--font-title);
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.neon-gold-text {
+  font-family: var(--font-title);
+  color: var(--neon-gold);
+  text-shadow: var(--glow-gold);
+}
+
+/* --------------------------------------------------------------------------
+   5. شاشة البداية (Splash Screen)
+   -------------------------------------------------------------------------- */
+#screen-splash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 420px;
+  padding: 24px;
+}
+
+.neon-logo-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+.neon-logo-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--neon-cyan);
+  border-top-color: var(--neon-purple);
+  box-shadow: var(--glow-cyan);
+  animation: spin 6s linear infinite;
+}
+
+.neon-logo-core {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+}
+
+.logo-aitt { color: var(--neon-cyan); }
+.logo-plus { color: var(--neon-purple); font-size: 2.4rem; }
+
+.game-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.game-subtitle {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+}
+
+.pulse-glow {
+  animation: pulseButton 2s infinite ease-in-out;
+}
+
+.version-tag {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--font-title);
+}
+
+/* --------------------------------------------------------------------------
+   6. القائمة الرئيسية (Main Menu)
+   -------------------------------------------------------------------------- */
+.cyber-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(5, 8, 22, 0.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--bg-card-border);
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 24px;
+  transition: background var(--transition-fast);
+}
+
+.user-profile-badge:hover {
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.avatar-ring {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid var(--neon-cyan);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  background: var(--bg-card);
+  box-shadow: var(--glow-cyan);
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.user-level {
+  font-size: 0.75rem;
+  color: var(--neon-cyan);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.currency-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 204, 0, 0.12);
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 800;
+  color: var(--neon-gold);
+}
+
+.menu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.menu-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.cyber-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+.cyber-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.card-icon {
+  font-size: 2.4rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.card-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.68rem;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.card-badge.live {
+  background: rgba(0, 212, 255, 0.2);
+  color: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
+}
+
+.card-badge.gold {
+  background: rgba(255, 204, 0, 0.2);
+  color: var(--neon-gold);
+  border: 1px solid var(--neon-gold);
+}
+
+.cyber-footer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--bg-card-border);
+}
+
+/* --------------------------------------------------------------------------
+   7. شاشة رقعة اللعبة (Game Arena)
+   -------------------------------------------------------------------------- */
+#screen-game {
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.game-hud-top {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hud-player-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 10px;
+  border-radius: 12px;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.hud-player-card.active-turn {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.6);
+  transform: scale(1.04);
+}
+
+.hud-player-card.player-red.active-turn { border-color: var(--p-red); box-shadow: 0 0 16px var(--p-red); }
+.hud-player-card.player-green.active-turn { border-color: var(--p-green); box-shadow: 0 0 16px var(--p-green); }
+.hud-player-card.player-yellow.active-turn { border-color: var(--p-yellow); box-shadow: 0 0 16px var(--p-yellow); }
+.hud-player-card.player-blue.active-turn { border-color: var(--p-blue); box-shadow: 0 0 16px var(--p-blue); }
+
+.player-avatar-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.p-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
+.p-score-tokens {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* الرقعة وCanvas */
+.board-arena-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.board-neon-frame {
+  position: relative;
+  padding: 6px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(168, 85, 247, 0.4));
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), var(--glow-cyan);
+}
+
+#ludo-board {
+  display: block;
+  width: 100%;
+  max-width: min(82vw, 540px);
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  background: #080d24;
+}
+
+/* HUD الأسفل والنرد */
+.game-hud-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 650px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 8px 12px;
+}
+
+.hud-action-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.dice-platform-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.turn-status-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  padding: 4px 14px;
+  border-radius: 12px;
+}
+
+.turn-highlight {
+  color: var(--neon-cyan);
+}
+
+.dice-stage {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+}
+
+.dice-neon-pedestal {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+  border: 2px dashed var(--neon-cyan);
+  animation: spin 12s linear infinite;
+}
+
+.cyber-dice {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  background: linear-gradient(145deg, #101c3d, #080d20);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  box-shadow: var(--glow-cyan);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+  z-index: 2;
+}
+
+.cyber-dice:hover {
+  transform: scale(1.08);
+}
+
+.cyber-dice.rolling {
+  animation: diceRoll3D 0.8s ease-in-out;
+}
+
+.dice-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   8. النوافذ المنبثقة (Modals)
+   -------------------------------------------------------------------------- */
+.cyber-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-smooth), visibility var(--transition-smooth);
+  z-index: 100;
+  padding: 16px;
+}
+
+.cyber-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 22, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.victory-card, .settings-card, .quick-chat-card, .screen-modal-wrapper {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), var(--glow-cyan);
+  border-radius: 24px;
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  z-index: 2;
+  backdrop-filter: blur(16px);
+}
+
+/* نافذة النصر */
+.victory-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.golden-trophy {
+  font-size: 4rem;
+  display: inline-block;
+  animation: bounceCup 1.5s infinite;
+}
+
+.reward-pill {
+  background: rgba(255, 204, 0, 0.15);
+  border: 1px solid var(--neon-gold);
+  color: var(--neon-gold);
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-weight: 800;
+}
+
+.final-ranks-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.rank-item.winner {
+  border: 1px solid var(--neon-gold);
+  background: rgba(255, 204, 0, 0.1);
+}
+
+.victory-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.victory-actions .cyber-btn { flex: 1; }
+
+/* الإعدادات والـ Toggles */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.neon-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.setting-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: block;
+}
+
+.setting-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.cyber-toggle {
+  position: relative;
+  width: 50px;
+  height: 28px;
+}
+
+.cyber-toggle input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+}
+
+.cyber-toggle input:checked + .toggle-slider {
+  background: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.cyber-toggle input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+  background: #050816;
+}
+
+.cyber-select {
+  background: #080d24;
+  color: var(--text-main);
+  border: 1px solid var(--bg-card-border);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.settings-danger-zone {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 51, 85, 0.2);
+}
+
+.danger-btn {
+  width: 100%;
+  background: rgba(255, 51, 85, 0.12);
+  border: 1px solid var(--p-red);
+  color: var(--p-red);
+  padding: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 700;
+  transition: all var(--transition-fast);
+}
+.danger-btn:hover { background: rgba(255, 51, 85, 0.25); }
+
+/* الأفاتار والمتجر */
+.char-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.char-tab-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.char-tab-btn.active {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.avatars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.avatar-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.avatar-card:hover, .avatar-card.selected {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 212, 255, 0.15);
+  transform: scale(1.05);
+  box-shadow: var(--glow-cyan);
+}
+
+.avatar-card.is-vip {
+  border-color: rgba(255, 204, 0, 0.4);
+}
+
+.avatar-card.is-vip.selected {
+  border-color: var(--neon-gold);
+  box-shadow: var(--glow-gold);
+}
+
+.avatar-emoji-large {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.avatar-name-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.vip-badge-tag {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.75rem;
+}
+
+/* فقاعات الشات */
+.quick-phrases-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.phrase-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-main);
+  padding: 12px;
+  border-radius: 12px;
+  text-align: right;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.phrase-pill:hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--neon-cyan);
+}
+
+.toast-bubble {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--bg-card);
+  border: 1px solid var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.toast-bubble.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   9. الرسوم المتحركة (Keyframe Animations)
+   -------------------------------------------------------------------------- */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseButton {
+  0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.6); }
+  50% { box-shadow: 0 0 30px rgba(168, 85, 247, 0.9); }
+}
+
+@keyframes diceRoll3D {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  30% { transform: translateY(-40px) rotate(180deg) scale(1.2); }
+  60% { transform: translateY(-20px) rotate(360deg) scale(1.1); }
+  85% { transform: translateY(0) rotate(540deg) scale(0.95); }
+  100% { transform: translateY(0) rotate(720deg) scale(1); }
+}
+
+@keyframes bounceCup {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-16px) scale(1.1); }
+}
+
+/* --------------------------------------------------------------------------
+   10. التجاوب مع مختلف الشاشات (Responsive)
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .cyber-header { padding: 10px 14px; }
+  .user-name { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .menu-content { padding: 14px; }
+  .game-title { font-size: 2.1rem; }
+  .hud-player-card { padding: 6px; }
+  .player-avatar-box { width: 30px; height: 30px; font-size: 1rem; }
+  .p-name { font-size: 0.7rem; max-width: 48px; }
+  .p-score-tokens { font-size: 0.6rem; }
+  .hud-circle-btn { width: 38px; height: 38px; font-size: 1.1rem; }
+  .cyber-dice { width: 50px; height: 50px; font-size: 1.7rem; }
+  .dice-stage { width: 64px; height: 64px; }
+}
